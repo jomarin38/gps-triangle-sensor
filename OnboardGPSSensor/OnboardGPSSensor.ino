@@ -44,7 +44,7 @@
 //#define JETI_ENABLE
 #define DEBUG_ENABLE
 #define DATALINK_ENABLE
-//define FAKE_GPS
+//#define FAKE_GPS
 
 #ifdef JETI_ENABLE
 #include <JetiExSerial.h>
@@ -251,6 +251,7 @@ void loop()
     lng = gps.GetLon();
     speed = gps.GetSpeedKm();
 #ifdef DEBUG_ENABLE
+      Serial.println(gps.serialize());
       Serial.print("lat=");Serial.print(lat);
       Serial.print(" lng=");Serial.print(lng);
       Serial.print(" speed=");Serial.println(speed);

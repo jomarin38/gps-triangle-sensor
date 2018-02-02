@@ -1,5 +1,4 @@
 #ifndef SERIALGPSSENSOR
-
 #define SERIALGPSSENSOR
 
 #include "Arduino.h"
@@ -11,7 +10,12 @@ class SerialGpsSensor : public GpsSensor
     SerialGpsSensor() : GpsSensor() {}
     ~SerialGpsSensor() {}
     
-    void serialize( char ** res );
+    char * serialize();
+    
+    private:
+    char * floatToString(char * outstr, double val, byte precision, byte widthp);
+    char lat[10];
+    char lon[10];
     
 };
 

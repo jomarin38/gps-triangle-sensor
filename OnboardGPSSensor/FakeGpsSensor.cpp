@@ -3,8 +3,8 @@
 void FakeGpsSensor::Init( enGpsSerial comPort )
 {
 	time=0;
-	m_flat=0.0;
-	m_flon=0.0;
+	m_flat=45.0;
+	m_flon=5.0;
 	m_altme=0.0;
 	m_age=0.0;
 	m_valid=true;
