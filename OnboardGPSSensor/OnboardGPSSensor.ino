@@ -44,14 +44,14 @@
 //#define JETI_ENABLE
 #define DEBUG_ENABLE
 #define DATALINK_ENABLE
-#define FAKE_GPS
+//define FAKE_GPS
 
 #ifdef JETI_ENABLE
 #include <JetiExSerial.h>
 #include <JetiExProtocol.h>
 #endif
 
-#include <GpsSensor.h>
+#include "SerialGpsSensor.h"
 
 #ifdef FAKE_GPS
 #include "FakeGpsSensor.h"
@@ -60,7 +60,7 @@
 #include <EEPROM.h>
 
 #ifndef FAKE_GPS
-GpsSensor gps;
+SerialGpsSensor gps;
 #endif
 
 #ifdef FAKE_GPS
