@@ -1,8 +1,63 @@
 #include "SerialGpsSensor.h"
 
-char * SerialGpsSensor::serialize()
+SerialGpsSensor::SerialGpsSensor() : GpsSensor() 
 {
-	return strcat(floatToString(lat,GetLat(),5,9),floatToString(lon,GetLon(),5,9));
+	homeSet = false;
+	homeTime = 0;
+	home_alt = 0;
+	distToHome = 0;
+	fix = false;
+}
+
+char * SerialGpsSensor::serialize(char * serializedData)
+{
+	if (fix) {
+	
+		if (homeSet) {
+			
+			sprintf(serializedData, 
+					"%10d%s%s%s%s%s%s",
+					(millis()-homeTime)/10,
+					floatToString(lat,GetLat(),5,10),
+					floatToString(lon,GetLon(),5,10),
+					floatToString(home_lat_string,home_lat,5,10),
+					floatToString(home_lon_string,home_lon,5,10),
+					floatToString(alt,GetAltMe(),5,10),
+					floatToString(speed,GetSpeedKm(),5,10));
+		}
+		else {
+			sprintf(serializedData, "h%1d Home not set", GetSats());
+		}
+	}
+	else {
+		sprintf(serializedData, "f%1d GPS not fixed", GetSats());
+	}
+	return serializedData;
+	
+}
+
+void SerialGpsSensor::DoGpsSensor()
+{
+	GpsSensor::DoGpsSensor();
+    
+    if (!fix) {
+		if (GetValid() && GetAge() < 2000) {
+			fix = true;
+			if (!homeSet) {
+				homeTime = (millis() + 5000);
+			}
+		} else {
+		fix = false;
+		}
+	}
+    
+    if (!homeSet && homeTime > 0 && (homeTime < millis())) {
+      homeSet = true;
+      home_lat = GetLat();
+      home_lon = GetLon();
+      home_alt = GetAltMe();
+    }
+
 }
 
 char * SerialGpsSensor::floatToString(char * outstr, double val, byte precision, byte widthp){

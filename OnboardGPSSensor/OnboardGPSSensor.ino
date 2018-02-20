@@ -44,7 +44,7 @@
 //#define JETI_ENABLE
 #define DEBUG_ENABLE
 #define DATALINK_ENABLE
-//#define FAKE_GPS
+#define FAKE_GPS
 
 #ifdef JETI_ENABLE
 #include <JetiExSerial.h>
@@ -88,6 +88,8 @@ float home_alt = 0;
 int altirel;
 int altiabs;
 int vario;
+
+char serializedData[100];
 
 enum
 {
@@ -234,7 +236,11 @@ void loop()
 {
 
   gps.DoGpsSensor();
+  
+  Serial.println(gps.serialize(serializedData));
+  
 
+/*
   if (!fix) {
     if (gps.GetValid() && gps.GetAge() < 2000) {
       fix = true;
@@ -448,6 +454,7 @@ void loop()
   HandleMenu();
   jetiEx.DoJetiSend();
 #endif
+*/
 }
 
 #ifdef JETI_ENABLE
