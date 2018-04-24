@@ -10,10 +10,14 @@ class SerialGpsSensor : public GpsSensor
     SerialGpsSensor();
     ~SerialGpsSensor() {}
     
+    boolean isHomeSet() {return homeSet;};
+    
     char * serialize(char * serializedData);
     void DoGpsSensor();
     
-	unsigned long distToHome;
+    private:
+    
+    unsigned long distToHome;
 	
 	
 	boolean homeSet;
@@ -24,7 +28,6 @@ class SerialGpsSensor : public GpsSensor
 	float home_lon;
 	float home_alt;
     
-    private:
     char * floatToString(char * outstr, double val, byte precision, byte widthp);
     char lat[11];
     char lon[11];

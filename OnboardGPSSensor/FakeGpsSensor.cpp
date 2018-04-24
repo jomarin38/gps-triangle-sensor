@@ -16,7 +16,7 @@ void FakeGpsSensor::DoGpsSensor()
 	m_flat = m_flat + time/1000.0 *2;
 	m_flon = m_flon + time/1000.0;
 	m_age = 0.0;
-	m_speedkm = sqrt(5.0);
+	m_speedkm = 10.0;
 	m_speedmi = 0.0;
 	//m_altme   = m_altme + time/1000.0 * 0.5 ;
 	m_altme   = 250.0 ;

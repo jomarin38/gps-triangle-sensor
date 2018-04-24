@@ -15,15 +15,19 @@ char * SerialGpsSensor::serialize(char * serializedData)
 	
 		if (homeSet) {
 			
+			
+			long time = (millis()-homeTime)/10;
+			floatToString(lat,GetLat(),5,10);
+			
 			sprintf(serializedData, 
-					"%10d%s%s%s%s%s%s",
-					(millis()-homeTime)/10,
-					floatToString(lat,GetLat(),5,10),
+					"%10ld,%s,%s,%s,%s,%s,%s",
+					time,
+					lat,
 					floatToString(lon,GetLon(),5,10),
 					floatToString(home_lat_string,home_lat,5,10),
 					floatToString(home_lon_string,home_lon,5,10),
-					floatToString(alt,GetAltMe(),5,10),
-					floatToString(speed,GetSpeedKm(),5,10));
+					floatToString(speed,GetSpeedKm(),5,10),
+					floatToString(alt,GetAltMe(),5,10));
 		}
 		else {
 			sprintf(serializedData, "h%1d Home not set", GetSats());
