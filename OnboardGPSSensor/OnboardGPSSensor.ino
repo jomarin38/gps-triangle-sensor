@@ -1,6 +1,6 @@
 #define DEBUG_ENABLE
 #define DATALINK_ENABLE
-#define FAKE_GPS
+//#define FAKE_GPS
 
 #include <EEPROM.h>
 
@@ -23,6 +23,8 @@ SDCardWriter writer;
 #ifdef FAKE_GPS
 FakeGpsSensor gps;
 #endif
+
+#define LED_PIN 6
 
 char serializedData[100];
 
@@ -58,12 +60,23 @@ long EEPROMReadlong(long address)
       return ((four << 0) & 0xFF) + ((three << 8) & 0xFFFF) + ((two << 16) & 0xFFFFFF) + ((one << 24) & 0xFFFFFFFF);
 }
 
+void blink(long time, long pause, int repeat) {
+	for (int i=0;i<repeat;i++) {
+		digitalWrite(LED_PIN, HIGH);
+		delay(time);
+		digitalWrite(LED_PIN, LOW);
+		delay(pause);
+	}
+}	
+
 void setup()
 {
-	
-#ifdef DEBUG_ENABLE
-  Serial.begin(9600);
-#endif
+
+  pinMode(LED_PIN, OUTPUT);
+    	
+  digitalWrite(LED_PIN, LOW);
+
+  Serial.begin(9600);	
   while (!Serial) {
     ; 
   }
@@ -72,8 +85,10 @@ void setup()
 
   Serial.println(writer.init(count));
   
-  EEPROMWritelong(0, count + 1);
-  
+  if (writer.isReady()) {
+	  blink(100,100,10);
+	  EEPROMWritelong(0, count + 1);
+  }
 
 #ifndef FAKE_GPS
   gps.Init( GpsSensor::SERIAL3 );
@@ -89,18 +104,33 @@ void loop()
 {
 
   gps.DoGpsSensor();
+  gps.serialize(serializedData);
   
-  if (gps.isHomeSet() && writer.isReady()) {
-	  Serial.println("Writing data to SD card ...");
-	  if (writer.write(gps.serialize(serializedData))) {
-		  Serial.println("Data successfully written");
-	  }
-	  else {
-		  Serial.println("Failed to write data");
-	  }
+  if (gps.isHomeSet()) {
+	if (writer.isReady()) {
+		bool success = writer.write(serializedData);
+#ifdef DEBUG_ENABLE
+		if (success) {
+			digitalWrite(LED_PIN, HIGH);
+			Serial.print("Data successfully written : ");
+		}
+		else {
+			blink(100,500,3);
+			Serial.print("Failed to write data : ");
+		}
+#endif
+	}
+	else {
+		blink(100,500,2);
+	}
+  }
+  else {
+	  blink(500,500,1);
   }
   
+#ifdef DEBUG_ENABLE
   Serial.println(serializedData);
+#endif
 
 }
 
