@@ -2,12 +2,14 @@
 #define SERIALGPSSENSOR
 
 #include "Arduino.h"
-#include <GpsSensor.h>
+//#include <GpsSensor.h>
+#include "UBXGpsSensor.h"
 
-class SerialGpsSensor : public GpsSensor
+//class SerialGpsSensor : public GpsSensor
+class SerialGpsSensor : public UBXGpsSensor
 {
     public:
-    SerialGpsSensor();
+    SerialGpsSensor(Stream &input);
     ~SerialGpsSensor() {}
     
     boolean isHomeSet() {return homeSet;};

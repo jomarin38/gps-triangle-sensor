@@ -1,6 +1,6 @@
 #include "SerialGpsSensor.h"
 
-SerialGpsSensor::SerialGpsSensor() : GpsSensor() 
+SerialGpsSensor::SerialGpsSensor(Stream &input) : UBXGpsSensor(input) 
 {
 	homeSet = false;
 	homeTime = 0;
@@ -42,10 +42,10 @@ char * SerialGpsSensor::serialize(char * serializedData)
 
 void SerialGpsSensor::DoGpsSensor()
 {
-	GpsSensor::DoGpsSensor();
+	UBXGpsSensor::DoGpsSensor();
     
     if (!fix) {
-		if (GetValid() && GetAge() < 2000) {
+		if (GetValid()) {
 			fix = true;
 			if (!homeSet) {
 				homeTime = (millis() + 5000);
